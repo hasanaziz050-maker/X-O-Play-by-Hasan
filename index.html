@@ -1,81 +1,251 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <title>Ratenspiel Hasan Abdulaziz</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            color: #333;
-        }
+  <meta charset="UTF-8">
+  <title>X-O Play by Hasan</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: linear-gradient(135deg, #89f7fe, #66a6ff);
+      margin: 0;
+      padding: 20px;
+      color: #222;
+    }
 
-        h1 {
-            color: darkblue;
-        }
+    h1 {
+      color: #fff;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    }
 
-        /* Box für Bild + Name */
-        .profilbox {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            text-align: center;
-        }
+    .start-screen {
+      margin-top: 30px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      display: inline-block;
+    }
 
-        /* Bild */
-        .profilbild {
-            width: 150px;
-            border-radius: 10px;
-            border: 2px solid darkblue;
-        }
+    input {
+      padding: 10px;
+      margin: 10px;
+      font-size: 16px;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+    }
 
-        /* Name unter dem Bild */
-        .name {
-            margin-top: 5px;
-            font-size: 14px;
-            font-weight: bold;
-            color: darkblue;
-        }
+    button {
+      padding: 12px 25px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+      border: none;
+      border-radius: 8px;
+      background: #ff6b6b;
+      color: white;
+      font-weight: bold;
+      transition: 0.3s;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
 
-        /* Vorstellungstext */
-        .about {
-            max-width: 600px;
-            margin-top: 40px;
-            font-size: 16px;
-            line-height: 1.6;
-        }
-    </style>
+    button:hover {
+      background: #ff4757;
+      transform: scale(1.05);
+    }
+
+    .game {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .status {
+      font-size: 22px;
+      margin-bottom: 15px;
+      font-weight: bold;
+      color: #fff;
+      background: rgba(0,0,0,0.2);
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 8px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 10px;
+      justify-content: center;
+      margin: 20px auto;
+    }
+
+    .cell {
+      width: 100px;
+      height: 100px;
+      background: #f9f9f9;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+      font-size: 40px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.3s;
+    }
+
+    .cell:hover {
+      transform: scale(1.05);
+    }
+
+    .cell.taken {
+      cursor: not-allowed;
+    }
+
+    .cell.X {
+      color: #e63946;
+      animation: pop 0.3s ease;
+    }
+
+    .cell.O {
+      color: #1d3557;
+      animation: pop 0.3s ease;
+    }
+
+    .winner {
+      background: #06d6a0 !important;
+      color: white !important;
+      animation: winner-glow 1s infinite alternate;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.6); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes winner-glow {
+      from { box-shadow: 0 0 10px #06d6a0; }
+      to { box-shadow: 0 0 20px #06d6a0; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 600px) {
+      .board {
+        grid-template-columns: repeat(3, 80px);
+        grid-template-rows: repeat(3, 80px);
+        gap: 8px;
+      }
+      .cell {
+        width: 80px;
+        height: 80px;
+        font-size: 32px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h1><h1>Willkommen bei Hasans Ratenspiel 🎲</h1>
+  <h1>✨ Tic Tac Toe Game ✨</h1>
 
-    <!-- Bild + Name -->
-    <div class="profilbox">
-        <img src="Hasan.JPG" alt="Mein Foto" class="profilbild">
-        <p class="name">Hasan Abdulaziz</p>
-    </div>
+  <div class="start-screen">
+    <input id="player1" type="text" placeholder="Spieler 1 Name">
+    <input id="player2" type="text" placeholder="Spieler 2 Name"><br>
+    <button onclick="startGame()">Spiel starten</button>
+  </div>
 
-    <!-- Vorstellungstext -->
-    <div class="about">
-    <p>
-        Hallo! Mein Name ist <strong>Hasan Abdulaziz</strong>. Ich bin 18 Jahre alt und besuche zurzeit die Schule. 
-        Neben dem Unterricht beschäftige ich mich leidenschaftlich mit Computern und habe vor kurzem angefangen, Programmieren zu lernen.
-    </p>
+  <div class="game">
+    <div class="status"></div>
+    <div class="board" id="board"></div>
+    <button onclick="resetGame()">🔄 Neu starten</button>
+  </div>
 
-    <p>
-        Besonders spannend finde ich es, mit <strong>HTML</strong> und <strong>CSS</strong> meine ersten eigenen Webseiten zu gestalten. 
-        Diese Seite hier ist mein erstes Projekt und ich freue mich, dass sie Stück für Stück wächst.
-    </p>
+  <script>
+    let board = ["", "", "", "", "", "", "", "", ""];
+    let currentPlayer = "X";
+    let player1 = "";
+    let player2 = "";
+    let gameActive = true;
 
-    <p>
-        Mein Ziel ist es, immer besser im Programmieren zu werden und später vielleicht einmal als Entwickler zu arbeiten. 
-        Ich bin neugierig, motiviert und bereit, Neues zu lernen.
-    </p>
+    const winningCombinations = [
+      [0,1,2],[3,4,5],[6,7,8],
+      [0,3,6],[1,4,7],[2,5,8],
+      [0,4,8],[2,4,6]
+    ];
 
-    <!-- HIER kommt dein Button hin -->
-    <button onclick="window.location.href='spiel.html'">➡️ Weiter zum Spiel</button>
-</div>
+    function startGame() {
+      player1 = document.getElementById("player1").value || "Spieler 1";
+      player2 = document.getElementById("player2").value || "Spieler 2";
+      document.querySelector(".start-screen").style.display = "none";
+      document.querySelector(".game").style.display = "block";
+      document.querySelector(".status").textContent = `${player1} (X) gegen ${player2} (O)`;
+      renderBoard();
+    }
 
+    function renderBoard() {
+      const boardDiv = document.getElementById("board");
+      boardDiv.innerHTML = "";
+      board.forEach((cell, index) => {
+        const div = document.createElement("div");
+        div.classList.add("cell");
+        if (cell !== "") {
+          div.textContent = cell;
+          div.classList.add("taken", cell);
+        }
+        div.addEventListener("click", () => makeMove(index));
+        boardDiv.appendChild(div);
+      });
+    }
+
+    function makeMove(index) {
+      if (!gameActive || board[index] !== "") return;
+      board[index] = currentPlayer;
+      renderBoard();
+      if (checkWin()) {
+        highlightWin();
+        document.querySelector(".status").textContent =
+          `${currentPlayer === "X" ? player1 : player2} hat gewonnen! 🎉`;
+        gameActive = false;
+        return;
+      }
+      if (board.every(cell => cell !== "")) {
+        document.querySelector(".status").textContent = "Unentschieden! 🤝";
+        gameActive = false;
+        return;
+      }
+      currentPlayer = currentPlayer === "X" ? "O" : "X";
+      document.querySelector(".status").textContent =
+        `Jetzt ist dran: ${currentPlayer === "X" ? player1 : player2}`;
+    }
+
+    function checkWin() {
+      return winningCombinations.find(comb =>
+        comb.every(index => board[index] === currentPlayer)
+      );
+    }
+
+    function highlightWin() {
+      const winCombo = checkWin();
+      if (winCombo) {
+        const boardDiv = document.getElementById("board").children;
+        winCombo.forEach(i => {
+          boardDiv[i].classList.add("winner");
+        });
+      }
+    }
+
+    function resetGame() {
+      board = ["", "", "", "", "", "", "", "", ""];
+      currentPlayer = "X";
+      gameActive = true;
+      document.querySelector(".status").textContent =
+        `${player1} (X) gegen ${player2} (O)`;
+      renderBoard();
+    }
+  </script>
 </body>
-</html> 
+</html>
